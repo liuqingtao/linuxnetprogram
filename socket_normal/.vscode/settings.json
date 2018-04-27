@@ -1,7 +1,6 @@
 {
     "files.associations": {
         "cstdio": "cpp",
-        "cstdlib": "cpp",
-        "type_traits": "cpp"
+        "cstdlib": "cpp"
     }
 }
