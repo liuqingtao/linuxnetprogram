@@ -93,6 +93,7 @@ void *produce(void *arg)
 int main(void)
 {
     int i;
+    int *p=(int*)malloc(sizeof(int));
     for(i=0;i<BUFFSIZE;i++)
         g_buffer[i]=-1;
     sem_init(&g_sem_full,0,BUFFSIZE);
@@ -102,17 +103,20 @@ int main(void)
     
     for(i=0;i<CONSUMER_COUN;i++)
     {
-        pthread_create(&g_thread[i],NULL,consume,(void *)i);
+        *p=i;
+        pthread_create(&g_thread[i],NULL,consume,p);
     }
     for(i=0;i<PRODUCER_COUN;i++)
     {
-        pthread_create(&g_thread[CONSUMER_COUN+i],NULL,produce,(void *)i);
+        *p=i;
+        pthread_create(&g_thread[CONSUMER_COUN+i],NULL,produce,p);
     }
     for(i=0;i<CONSUMER_COUN+PRODUCER_COUN;i++)
         pthread_join(g_thread[i],NULL);
     sem_destroy(&g_sem_full);
     sem_destroy(&g_sem_empty);
     pthread_mutex_destroy(&g_mutex);
+    free(p);
     return 0;
 
 }

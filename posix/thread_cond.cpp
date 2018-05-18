@@ -13,7 +13,7 @@
 
 
 
-#define CONSUMER_COUN 1
+#define CONSUMER_COUN 2
 #define PRODUCER_COUN 1
 pthread_mutex_t g_mutex;
 pthread_cond_t g_cond;
@@ -23,7 +23,7 @@ int nready=0;
 void *consume(void *arg)
 {
     int num=*((int*)arg);
-    free(arg);
+
     while(1)
     {       
         
@@ -44,7 +44,7 @@ void *consume(void *arg)
 void *produce(void *arg)
 {
     int num=*((int*)arg);
-    free(arg);
+    
     while(1)
     {
         
@@ -54,7 +54,7 @@ void *produce(void *arg)
         pthread_cond_signal(&g_cond);
         printf("%d singal.....\n",num);
         pthread_mutex_unlock(&g_mutex);
-        sleep(1);
+        sleep(2);
     }
     return NULL;   
 }
@@ -63,13 +63,16 @@ int main(void)
 {
     int i;
     int *p=(int*)malloc(sizeof(int));
-    pthread_cond_init(&g_cond,NULL);
     pthread_mutex_init(&g_mutex,NULL);
+    pthread_cond_init(&g_cond,NULL);
+    
     for(i=0;i<CONSUMER_COUN;i++)
     {
         *p=i;
         pthread_create(&g_thread[i],NULL,consume,p);
+        sleep(1);
     }
+    
     for(i=0;i<PRODUCER_COUN;i++)
     {
         *p=i;
@@ -80,6 +83,7 @@ int main(void)
 
     pthread_mutex_destroy(&g_mutex);
     pthread_cond_destroy(&g_cond);
+    free(p);
     return 0;
 
 }
