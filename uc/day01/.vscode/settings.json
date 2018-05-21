@@ -2,5 +2,6 @@
     "files.associations": {
         "cstdio": "cpp",
         "cstdlib": "cpp"
-    }
+    },
+    "C_Cpp.dimInactiveRegions": false
 }
