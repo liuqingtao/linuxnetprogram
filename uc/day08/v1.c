@@ -10,5 +10,5 @@ int main(){
         perror("execl");
         exit(0);
     }
-    waitpid(pid,0,0);
+    waitpid(pid,0,0);//status为0代表不接收数据
 }
