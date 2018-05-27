@@ -15,7 +15,9 @@ typedef struct tag_Service{
     pid_t srv_pid; //服务pid
 }SERVICE;
 //服务进程数组
-static SERVICE g_srv[]={{"./open",-1}};
+static SERVICE g_srv[]={
+    {"./open",-1},
+    {"./query",-1}};
 //初始化
 int init(void){
     printf("服务器初始化.....\n");

@@ -33,7 +33,7 @@ int get(int id,ACCOUNT* acc){
     sprintf(pathname,"%d.acc",id);
     int fd=open(pathname,O_RDONLY);
     if(fd==-1) perror("open"),exit(-1);
-    if(read(fd,acc,sizeof(&acc))==-1) perror("read"),exit(-1);
+    if(read(fd,acc,sizeof(*acc))==-1) perror("read"),exit(-1);
     close(fd);
     return 0;
 }
