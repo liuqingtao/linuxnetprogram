@@ -42,6 +42,9 @@ void* thread_toutine(void* arg){
         //如果等待到线程池销毁通知且任务都执行完毕
         if(pool->quit&&pool->first==NULL){
             pool->counter--;
+            if(pool->counter==0){
+                condition_signal(&pool->ready);
+            }
             condition_unlock(&pool->ready);
             //跳出循环之前要记得解锁要
             break;
@@ -97,5 +100,21 @@ void threadpool_add_task(threadpool_t *pool,void*(*run)(void* arg),void *arg){
 //销毁线程池
 void threadpool_destroy(threadpool_t *pool){
     
+    if(pool->quit)
+        return;
+    condition_lock(&pool->ready);
+    pool->quit=1;
+    if(pool->counter>0){
+        if(pool->idle>0){
+            condition_broadcast(&pool->ready);
+        }
+        //处于执行任务状态中的线程不会收到广播，线程池也需要等待执行任务状态中的线程全部退出
+        while(pool->counter>0){
+            condition_wait(&pool->ready);
+        }
+
+    }
+    condition_unlock(&pool->ready);
+    condition_destroy(&pool->ready);
     
 }
